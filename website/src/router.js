@@ -13,12 +13,22 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
+      meta: {title:'NUS Collaterized Loan'},
+      beforeEnter: (to,from,next) => {
+        document.title = to.meta.title
+        next()
+      }
     },
     {
     	path: '/loan/:userID',
     	name: 'loan',
-    	component: Loan
+    	component: Loan,
+      meta: {title:'Loan'},
+      beforeEnter: (to,from,next) => {
+        document.title = to.meta.title
+        next()
+      }
     }
     
   ]
