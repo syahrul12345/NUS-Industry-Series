@@ -41,6 +41,7 @@
         web3:null,
         network:null,
         userID:null,
+        wantedNetwork:5777,
       }
     },
     async created() {
@@ -54,7 +55,7 @@
     methods: {
       async login() {
         if(window.ethereum){
-          if(this.network === 3){
+          if(this.network === this.wantedNetwork){
             this.$router.push(`/loan/${this.userID}`)
           }else{
             this.error("You're not on ropsten")
@@ -64,11 +65,13 @@
         }
       },
       async checkNetwork() {
+
         window.web3.version.getNetwork((err,id) => {
-          if(id != 3) {
+          console.log(id)
+          if(id != this.wantedNetwork) {
             return;
           }else{
-            this.network = 3
+            this.network = this.wantedNetwork
             return;
           }
         })
