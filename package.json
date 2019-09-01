@@ -1,0 +1,25 @@
+{
+  "name": "nus-industry-series",
+  "version": "1.0.0",
+  "description": "Decentralized Collateralized Loans using DAI. Built for NUS Industry Series Lecture,",
+  "main": "password.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/syahrul12345/NUS-Industry-Series.git"
+  },
+  "author": "Syahrul Nizam",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/syahrul12345/NUS-Industry-Series/issues"
+  },
+  "homepage": "https://github.com/syahrul12345/NUS-Industry-Series#readme",
+  "dependencies": {
+    "truffle-hdwallet-provider": "^1.0.17"
+  }
+}

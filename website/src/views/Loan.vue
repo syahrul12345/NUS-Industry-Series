@@ -79,7 +79,7 @@
 				nDaiContract:null,
 				sendEthBtnToggle:false,
 				sendDAIBtnToggle:false,
-				wantedNetwork:5777,
+				wantedNetwork:3,
 			}
 		},
 		async created() {
@@ -113,7 +113,7 @@
 
 		beforeRouteEnter(to,from,next) {
 			//make sure to check for metamask
-			const wantedNetwork = 5777
+			const wantedNetwork = 3
 			if(window.ethereum) {
 				window.web3.version.getNetwork(async(err,id) => {
 					if(id == wantedNetwork){

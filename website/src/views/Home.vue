@@ -41,7 +41,7 @@
         web3:null,
         network:null,
         userID:null,
-        wantedNetwork:5777,
+        wantedNetwork:3,
       }
     },
     async created() {
@@ -65,9 +65,7 @@
         }
       },
       async checkNetwork() {
-
         window.web3.version.getNetwork((err,id) => {
-          console.log(id)
           if(id != this.wantedNetwork) {
             return;
           }else{
