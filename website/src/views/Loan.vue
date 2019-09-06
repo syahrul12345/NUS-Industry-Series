@@ -12,8 +12,15 @@
 		</v-row>
 		<v-row>
 			<v-col cols="12" sm="12">
-				<h2> Want to generate more nDAI? <v-btn @click="borrow"> Click Here! </v-btn></h2>
+				<h2> Want to generate more nDAI? <v-btn @click="borrow"> Click Here! </v-btn> </h2> 
+				<p v-if="nDAIpending"> You have pending transactions, your nDAI being sent is still being processed </p>
 				<h2> Want to get back your ETH?  <v-btn @click="lend"> Click Here! </v-btn></h2>
+				<p v-if="ETHpending">  You have pending transactions, your ETH being sent is still being processed </p>
+			</v-col>
+		</v-row>
+		<v-row>
+			<v-col cols="12" sm="12">
+				<h2> Add nDAI into metamask your metamask wallet. <v-btn @click="addToMetamask">Click Here!</v-btn> </h2>
 			</v-col>
 		</v-row>
 		<v-dialog v-model="borrowDialog" max-width="500">
@@ -48,6 +55,50 @@
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
+		<v-dialog v-model="metamaskDialog">
+			<v-card>
+				<v-row justify="center">
+					<v-card-title style="color:black">Follow the instructions below to add nDAI to your wallet</v-card-title>
+				</v-row>
+				<v-row justify="center">
+					<v-col cols="3">
+						<v-card 
+						:hover="true"
+						max-height=""
+						style="text-align: center">
+							<v-img 
+							:src="require('../assets/first.png')">
+							</v-img>
+							<h3 style="color: black"> Open up metamask & click on the menu button</h3>
+						</v-card>
+					</v-col>
+					<v-col cols="3">
+						<v-card 
+						:hover="true"
+						max-height=""
+						style="text-align: center">
+							<v-img 
+							:src="require('../assets/second.png')">
+							</v-img>
+							<h3 style="color: black"> Click add token to add our nDAI token</h3>
+						</v-card>
+					</v-col>
+					<v-col cols="3">
+						<v-card 
+						:hover="true"
+						max-height=""
+						style="text-align: center">
+							<v-img 
+							:src="require('../assets/third.png')">
+							</v-img>
+							<h3 style="color: black"> Add in this address : 0xF3E84C912c4D509980BbDCEe75c9ecDD6691FeA5</h3>
+						</v-card>
+					</v-col>
+				</v-row>
+			</v-card>
+		</v-dialog>
+			
+		</v-dialog>
 		<v-dialog v-model="errorDialog" persistent max-width="300" >
       <Error :ErrorMessage="errorMessage" v-on:close="closeDialog"></Error>
     </v-dialog>
@@ -80,12 +131,20 @@
 				sendEthBtnToggle:false,
 				sendDAIBtnToggle:false,
 				wantedNetwork:3,
+				metamaskDialog:false,
+				nDAIpending:false,
+				ETHpending:false,
 			}
 		},
 		async created() {
 			await this.updateStats()
 			//lets watch for the events fired which is transfers
 			const accounts = await ethereum.enable()
+			window.ethereum.on('accountsChanged',(accounts) => {
+				this.updateStats()
+			})
+
+
 			//all contributions
 			this.nDaiContract.events.Contribute()
 				.on('data',(data)=>{
@@ -146,11 +205,19 @@
 								gasPrice:20000000000
 							}
 							//send the ether
-							this.web3.eth.sendTransaction(txPayload).on('receipt',(receipt) => {
-								this.updateStats()
+							this.web3.eth.sendTransaction(txPayload)
+
+							.on('transactionHash',(transactionHash) => {
+								//trasnaction broadcasted
 								this.borrowDialog = false;
-								
-							}).on('error',(error) => {
+								this.ETHpending = true
+							})
+							.on('receipt',(receipt) => {
+								//transaction confirmed
+								this.ETHpending = false
+								this.updateStats()
+							})
+							.on('error',(error) => {
 								this.error(error)
 							})
 						}else{
@@ -170,8 +237,17 @@
 							if(this.yourNDai >= this.daiToSend){
 								this.nDaiContract.methods.getBackContribution(this.web3.utils.toWei(this.daiToSend,'ether')).send({
 									from:accounts[0]
-								}).on('receipt',(receipt) => {
+								})
+								.on('transactionHash',(transactionHash) => {
+									//transaction broadcasted
+									this.lendDialog = false;
+									this.nDAIpending = true
+								})
+								.on('receipt',(receipt) => {
+									//transaction confirmed
+									this.nDAIpending = false
 									this.updateStats()
+
 								})
 							}else{
 								console.log("you have lesser nDAI in your wallet than you want to spend")
@@ -209,6 +285,9 @@
 					this.error("No Metamask or metamask crashed")
 				}
 			},
+			async addToMetamask() {
+				this.metamaskDialog = true;
+			},
 			error(value){
 				this.errorMessage = value
 				this.errorDialog = true
@@ -220,6 +299,11 @@
 						return !!value || 'Required.'
 			},
 			check(value) {
+				if(value > this.yourLoanedNDAi) {
+					this.sendDAIBtnToggle = true
+					return false || 'You cannot return more nDAI than what you borrowed'
+				}
+
 				if(value > this.yourNDai) {
 					this.sendDAIBtnToggle = true
 					return false || 'You cant send more nDAI than you owe'

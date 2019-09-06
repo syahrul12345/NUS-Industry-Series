@@ -1,7 +1,7 @@
 <template>
   <v-container fill-height>
   	<v-row >
-     <v-col cols="12" sm="6">
+     <v-col cols="12" sm="6" md="6" lg="6" xl="6">
       <div>
         <h1> Welcome to the NUS Collatarized </h1>
         <h1>Debt Portal</h1>
@@ -10,7 +10,7 @@
         <h2> Current interest rate is: {{interestRate}} % </h2>
       </div>
      </v-col>
-     <v-col cols="12" sm="6" fill-height>
+     <v-col cols="12" sm="6" md="6" lg="6" xl="6" fill-height>
       <v-container fill-height>
         <v-row>
           <v-btn dark @click="login"> Log in via Metamask</v-btn>

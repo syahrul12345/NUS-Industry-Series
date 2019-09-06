@@ -9,7 +9,7 @@ const assert = require('assert')
 const nDAIABI = require('./../build/contracts/NDAI.json')
 let accounts;
 let nDAI;
-const ethersToSend = [1,2,3,4,5,6,7,8]
+const ethersToSend = [0.1,0.24,3,4,5,6,7,8]
 
 before(async() => {
 	accounts = await web3.eth.getAccounts()
@@ -24,7 +24,7 @@ before(async() => {
 		console.log("Propogated transaction to the blockchain")
 	}).on('reciept',(receipt) => {
 	}).then((instance) => {
-		nDAI = new web3.eth.Contract(nDAIABI.abi,nDAIABI.networks[5777].address)
+		nDAI = new web3.eth.Contract(nDAIABI.abi,instance.options.address)
 	})
 
 })
