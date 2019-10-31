@@ -1,5 +1,5 @@
 const Web3 = require('Web3')
-const web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:7545'),null,{
+const web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'),null,{
 	transactionConfirmationBlocks:1,
 })
 
@@ -9,7 +9,7 @@ const assert = require('assert')
 const nDAIABI = require('./../build/contracts/NDAI.json')
 let accounts;
 let nDAI;
-const ethersToSend = [0.1,0.24,3,4,5,6,7,8]
+const ethersToSend = [0.1,0.2,0.3,0.5,0.6,0.5,0.9,0.2]
 
 before(async() => {
 	accounts = await web3.eth.getAccounts()
