@@ -65,7 +65,7 @@ func serve() {
 		fileServer.ServeHTTP(w, r)
 	}))
 	port := "9190"
-	log.Print("The website can be served at http://localhost:9595")
+	log.Print("The website can be served at http://localhost: %d", port)
 	//For Testing
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://127.0.0.1:8080"},
